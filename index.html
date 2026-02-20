@@ -809,24 +809,29 @@
 <!-----------------------------------                SCRIPT           --------------------------------------------------------------->
   <script>
 
-    var map = L.map('map').setView([-3.608388, -38.966187], 12);
+     // Centralização do mapa ajustada aos limites reais
+var map = L.map('map').setView(
+    [-3.591, -39.0645],
+    11
+);
 
-    var baseEsri = L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      {
-        maxZoom: 22,
-        attribution: 'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
-      }
-    ).addTo(map);
-
+    // Base padrão: OpenStreetMap
     var baseOSM = L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
         maxZoom: 22,
         attribution: '© OpenStreetMap contributors'
       }
-    );
+    ).addTo(map);
 
+    // Base alternativa: Esri World Imagery
+    var baseEsri = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        maxZoom: 22,
+        attribution: 'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+      }
+    );
 
     L.control.scale({imperial: false}).addTo(map);    // Escala gráfica
 
@@ -878,7 +883,50 @@
         "Coordenadas: " + e.latlng.lat.toFixed(5) + " , " + e.latlng.lng.toFixed(5);
     });
 
-// CAMADA WMS: LOTES FISCAIS - INÍCIO
+
+    // CAMADA WMS: LIMITE MUNICIPAL SGA - INÍCIO
+    let limiteSGALayer;
+
+    function loadLimiteSGALayer() {
+        const zoom = map.getZoom();
+
+        // Exibe camada apenas a partir do zoom 10 (ajuste se quiser)
+        if (zoom < 10) {
+            if (limiteSGALayer) {
+                map.removeLayer(limiteSGALayer);
+                limiteSGALayer = null;
+            }
+            return;
+        }
+
+        // Remove camada antiga se já existir
+        if (limiteSGALayer) {
+            map.removeLayer(limiteSGALayer);
+        }
+
+        // Adiciona camada WMS
+        limiteSGALayer = L.tileLayer.wms(
+            "http://10.1.0.102:8080/geoserver/idesefin/wms",
+            {
+                layers: "idesefin:tb_limite_sga",
+                format: "image/png",
+                transparent: true,
+                version: "1.1.0",
+                attribution: "GeoServer | IDE SEFIN",
+                tiled: true
+            }
+        ).addTo(map);
+    }
+
+    // Chamada inicial
+    loadLimiteSGALayer();
+
+    // Atualiza ao mudar o zoom
+    map.on("zoomend", loadLimiteSGALayer);
+    // CAMADA WMS: LIMITE MUNICIPAL SGA - FIM
+
+/*
+      // CAMADA WMS: LOTES FISCAIS - INÍCIO
 let lotesLayer;
 
 function loadLotesLayer() {
@@ -916,7 +964,7 @@ loadLotesLayer();
 map.on("zoomend", loadLotesLayer);
 
 // CAMADA WMS: LOTES FISCAIS - FIM
-
+*/
 
 // FUNÇÃO DE PESQUISA DE LOTE - Inicio
 // Toggle painel de pesquisa de lote
@@ -966,6 +1014,7 @@ document.getElementById('searchExecuteBtn').addEventListener('click', () => {
   }
 });
 // FUNÇÃO DE PESQUISA DE LOTE - Fim
+
 
 
 // FUNÇÃO DE PESQUISA DE COORDENADAS - Inicio
