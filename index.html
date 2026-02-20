@@ -809,29 +809,24 @@
 <!-----------------------------------                SCRIPT           --------------------------------------------------------------->
   <script>
 
-     // Centralização do mapa ajustada aos limites reais
-var map = L.map('map').setView(
-    [-3.591, -39.0645],
-    11
-);
+    var map = L.map('map').setView([-3.608388, -38.966187], 12);
 
-    // Base padrão: OpenStreetMap
-    var baseOSM = L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom: 22,
-        attribution: '© OpenStreetMap contributors'
-      }
-    ).addTo(map);
-
-    // Base alternativa: Esri World Imagery
     var baseEsri = L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       {
         maxZoom: 22,
         attribution: 'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
       }
+    ).addTo(map);
+
+    var baseOSM = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 22,
+        attribution: '© OpenStreetMap contributors'
+      }
     );
+
 
     L.control.scale({imperial: false}).addTo(map);    // Escala gráfica
 
@@ -883,50 +878,7 @@ var map = L.map('map').setView(
         "Coordenadas: " + e.latlng.lat.toFixed(5) + " , " + e.latlng.lng.toFixed(5);
     });
 
-
-    // CAMADA WMS: LIMITE MUNICIPAL SGA - INÍCIO
-    let limiteSGALayer;
-
-    function loadLimiteSGALayer() {
-        const zoom = map.getZoom();
-
-        // Exibe camada apenas a partir do zoom 10 (ajuste se quiser)
-        if (zoom < 10) {
-            if (limiteSGALayer) {
-                map.removeLayer(limiteSGALayer);
-                limiteSGALayer = null;
-            }
-            return;
-        }
-
-        // Remove camada antiga se já existir
-        if (limiteSGALayer) {
-            map.removeLayer(limiteSGALayer);
-        }
-
-        // Adiciona camada WMS
-        limiteSGALayer = L.tileLayer.wms(
-            "http://localhost:8080/geoserver/idesefin/wms",
-            {
-                layers: "idesefin:tb_limite_sga",
-                format: "image/png",
-                transparent: true,
-                version: "1.1.0",
-                attribution: "GeoServer | IDE SEFIN",
-                tiled: true
-            }
-        ).addTo(map);
-    }
-
-    // Chamada inicial
-    loadLimiteSGALayer();
-
-    // Atualiza ao mudar o zoom
-    map.on("zoomend", loadLimiteSGALayer);
-    // CAMADA WMS: LIMITE MUNICIPAL SGA - FIM
-
-/*
-      // CAMADA WMS: LOTES FISCAIS - INÍCIO
+// CAMADA WMS: LOTES FISCAIS - INÍCIO
 let lotesLayer;
 
 function loadLotesLayer() {
@@ -964,7 +916,7 @@ loadLotesLayer();
 map.on("zoomend", loadLotesLayer);
 
 // CAMADA WMS: LOTES FISCAIS - FIM
-*/
+
 
 // FUNÇÃO DE PESQUISA DE LOTE - Inicio
 // Toggle painel de pesquisa de lote
@@ -1014,7 +966,6 @@ document.getElementById('searchExecuteBtn').addEventListener('click', () => {
   }
 });
 // FUNÇÃO DE PESQUISA DE LOTE - Fim
-
 
 
 // FUNÇÃO DE PESQUISA DE COORDENADAS - Inicio
@@ -1089,35 +1040,35 @@ const PRESET_WMS = [
   // 🗂 TERRITORIAIS / 📌 Limites Administrativos
   {
     nome: "Distritos",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_distritos&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_distritos&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_distritos",
     categoria: "TERRITORIAIS",
     subcategoria: "Limites Administrativos"
   },
   {
     nome: "Bairros",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_bairros&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_bairros&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_bairros",
     categoria: "TERRITORIAIS",
     subcategoria: "Limites Administrativos"
   },
   {
     nome: "Setores Censitários",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_setores_censitarios&bbox=464983.03125%2C9589708.0%2C521475.75%2C9616969.0&width=768&height=370&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_setores_censitarios&bbox=464983.03125%2C9589708.0%2C521475.75%2C9616969.0&width=768&height=370&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_setores_censitarios",
     categoria: "TERRITORIAIS",
     subcategoria: "Limites Administrativos"
   },
   {
     nome: "Lotes Fiscais",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_lotes_fiscais&bbox=487551.0625%2C9594149.0%2C519953.65625%2C9616150.0&width=768&height=521&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_lotes_fiscais&bbox=487551.0625%2C9594149.0%2C519953.65625%2C9616150.0&width=768&height=521&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_lotes_fiscais",
     categoria: "TERRITORIAIS",
     subcategoria: "Limites Administrativos"
   },
   {
     nome: "Zonas Cartoriais",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_cartorio_sga&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_cartorio_sga&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_cartorio_sga",
     categoria: "TERRITORIAIS",
     subcategoria: "Limites Administrativos"
@@ -1126,14 +1077,14 @@ const PRESET_WMS = [
   // 🗂 TERRITORIAIS / 🌿 Limites Ambientais
   {
     nome: "Bacia Hidrográfica",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_distritos&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_distritos&bbox=464983.03125%2C9589708.0%2C521484.40625%2C9616345.0&width=768&height=362&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_distritos",
     categoria: "TERRITORIAIS",
     subcategoria: "Limites Ambientais"
   },
   {
     nome: "Linha de Preamar",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_linha_preamar_marinha&bbox=506709.375%2C9607073.0%2C519201.0%2C9616247.0&width=768&height=564&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_linha_preamar_marinha&bbox=506709.375%2C9607073.0%2C519201.0%2C9616247.0&width=768&height=564&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_linha_preamar_marinha",
     categoria: "TERRITORIAIS",
     subcategoria: "Limites Ambientais"
@@ -1142,7 +1093,7 @@ const PRESET_WMS = [
   // 📍 LOCALIDADES
   {
     nome: "Localidades",
-    urlCompleta: "http://localhost:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_localidade_sga_ipece_2023&bbox=466147.0%2C9590652.0%2C519915.78125%2C9613159.0&width=768&height=330&srs=EPSG%3A31984&styles=&format=application/openlayers",
+    urlCompleta: "http://10.1.0.102:8080/geoserver/idesefin/wms?service=WMS&version=1.1.0&request=GetMap&layers=idesefin%3Atb_localidade_sga_ipece_2023&bbox=466147.0%2C9590652.0%2C519915.78125%2C9613159.0&width=768&height=330&srs=EPSG%3A31984&styles=&format=application/openlayers",
     layers: "idesefin:tb_localidade_sga_ipece_2023",
     categoria: "TERRITORIAIS",
     subcategoria: "Localidades"
@@ -1265,7 +1216,7 @@ function buildPresetList() {
           // Usa a URL base do WMS derivada da urlCompleta, quando disponível
           const wmsUrl = (preset.urlCompleta && preset.urlCompleta.includes('?'))
             ? preset.urlCompleta.split('?')[0]
-            : 'http://localhost:8080/geoserver/idesefin/wms';
+            : 'http://10.1.0.102:8080/geoserver/idesefin/wms';
 
           layerInstance = L.tileLayer.wms(wmsUrl, {
             layers: preset.layers,
@@ -1296,7 +1247,7 @@ function buildPresetList() {
     subtitle.appendChild(small);
 
     const toUrl = (fmt) => {
-      const base = 'http://localhost:8080/geoserver/idesefin/ows?service=WFS&version=1.0.0&request=GetFeature';
+      const base = 'http://10.1.0.102:8080/geoserver/idesefin/ows?service=WFS&version=1.0.0&request=GetFeature';
       const typeName = encodeURIComponent(preset.layers);
       const srsName = 'EPSG:4326';
       let outputFormat = fmt;
